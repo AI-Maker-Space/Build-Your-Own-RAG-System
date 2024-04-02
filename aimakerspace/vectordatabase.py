@@ -41,7 +41,7 @@ class VectorDatabase:
         return_as_text: bool = False,
     ) -> List[Tuple[str, float]]:
         query_vector = self.embedding_model.get_embedding(query_text)
-        results = self.search(query_vector, k, distance_measure)
+        results = self.search(query_vector.data[0].embedding, k, distance_measure)
         return [result[0] for result in results] if return_as_text else results
 
     def retrieve_from_key(self, key: str) -> np.array:
@@ -49,14 +49,14 @@ class VectorDatabase:
 
     async def abuild_from_list(self, list_of_text: List[str]) -> "VectorDatabase":
         embeddings = await self.embedding_model.async_get_embeddings(list_of_text)
-        for text, embedding in zip(list_of_text, embeddings):
-            self.insert(text, np.array(embedding))
+        for text, embedding in zip(list_of_text, embeddings.data):
+            self.insert(text, np.array(embedding.embedding))
         return self
 
 
 if __name__ == "__main__":
     list_of_text = [
-        "I like to eat broccoli and bananas.",
+        "I like to eat spinach and bananas.",
         "I ate a banana and spinach smoothie for breakfast.",
         "Chinchillas and kittens are cute.",
         "My sister adopted a kitten yesterday.",

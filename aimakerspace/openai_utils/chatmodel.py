@@ -4,7 +4,6 @@ import os
 
 load_dotenv()
 
-
 class ChatOpenAI:
     def __init__(self, model_name: str = "gpt-3.5-turbo"):
         self.model_name = model_name
@@ -17,7 +16,7 @@ class ChatOpenAI:
             raise ValueError("messages must be a list")
 
         openai.api_key = self.openai_api_key
-        response = openai.ChatCompletion.create(
+        response = openai.Client().chat.completions.create(
             model=self.model_name, messages=messages
         )
 
@@ -25,3 +24,13 @@ class ChatOpenAI:
             return response.choices[0].message.content
 
         return response
+    
+if __name__ == "__main__":
+    print("Testing ChatOpenAI")
+    chat_openai = ChatOpenAI()
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is the meaning of life?"}
+    ]
+    response = chat_openai.run(messages)
+    print(response)

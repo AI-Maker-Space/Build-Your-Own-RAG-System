@@ -1,10 +1,4 @@
 from dotenv import load_dotenv
-from openai.embeddings_utils import (
-    get_embeddings,
-    aget_embeddings,
-    get_embedding,
-    aget_embedding,
-)
 import openai
 from typing import List
 import os
@@ -24,20 +18,24 @@ class EmbeddingModel:
         self.embeddings_model_name = embeddings_model_name
 
     async def async_get_embeddings(self, list_of_text: List[str]) -> List[List[float]]:
-        return await aget_embeddings(
-            list_of_text=list_of_text, engine=self.embeddings_model_name
+        return await openai.AsyncClient(api_key=self.openai_api_key).embeddings.create(
+            input=list_of_text, model=self.embeddings_model_name
         )
 
     async def async_get_embedding(self, text: str) -> List[float]:
-        return await aget_embedding(text=text, engine=self.embeddings_model_name)
+        return await openai.AsyncClient(api_key=self.openai_api_key).embeddings.create(
+            input=text, model=self.embeddings_model_name
+        )
 
     def get_embeddings(self, list_of_text: List[str]) -> List[List[float]]:
-        return get_embeddings(
-            list_of_text=list_of_text, engine=self.embeddings_model_name
+        return openai.Client(api_key=self.openai_api_key).embeddings.create(
+            input=list_of_text, model=self.embeddings_model_name
         )
 
     def get_embedding(self, text: str) -> List[float]:
-        return get_embedding(text=text, engine=self.embeddings_model_name)
+        return openai.Client(api_key=self.openai_api_key).embeddings.create(
+            input=text, model=self.embeddings_model_name
+        )
 
 
 if __name__ == "__main__":
